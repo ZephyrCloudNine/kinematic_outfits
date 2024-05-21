@@ -1,42 +1,53 @@
 
+#include "config.h"
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
 
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+//initializing PCA9685 servo instances 
+Adafruit_PWMServoDriver driver[NUM_DRIVERS] = {Adafruit_PWMServoDriver(D1_I2C_ADDR),Adafruit_PWMServoDriver(D2_I2C_ADDR)};
 
-#define SERVOMIN  75 // This is the 'minimum' pulse length count (out of 4096)
-#define SERVOMAX 190 // This is the 'maximum' pulse length count (out of 4096)
-#define USMIN  600 // This is the rounded 'minimum' microsecond length based on the minimum pulse of 150
-#define USMAX  2400 // This is the rounded 'maximum' microsecond length based on the maximum pulse of 600
-#define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
-
-void setup() {
-  Serial.begin(115200);
+void setup()
+{
+  Serial.begin(SERIAL_SPEED);
   Serial.println("8 channel Servo test!");
-  pwm.begin();
-  pwm.setOscillatorFrequency(27000000);
-  pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
+  Wire.begin(SDA_PIN,SCL_PIN);
+
+  driver[D1_ID].begin();
+  driver[D1_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
+  driver[D1_ID].setPWMFreq(SERVO_FREQ); 
+  driver[D2_ID].begin();
+  driver[D2_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
+  driver[D2_ID].setPWMFreq(SERVO_FREQ); 
 
   delay(1500);
   Serial.print("Set pulse width value: ");
 }
 
-void loop() {
+void loop()
+{
   // Drive each servo one in a back/front gradual sweep
   // Serial.println(servonum);
-  for (uint16_t pulselen = SERVOMIN; pulselen < SERVOMAX; pulselen++) {
-    pwm.setPWM(servonum, 0, pulselen);
+  for (uint16_t pulselen = SERVO_1_MIN_PULSE; pulselen < SERVO_1_MAX_PULSE; pulselen++)
+  {
+    driver[0].setPWM(0, 0, pulselen);
+    driver[SERVO_2_DRIVER_ID].setPWM(SERVO_2_CHANNEL, 0, pulselen);
+    driver[SERVO_3_DRIVER_ID].setPWM(SERVO_3_CHANNEL, 0, pulselen);
+    driver[SERVO_4_DRIVER_ID].setPWM(SERVO_4_CHANNEL, 0, pulselen);
     delay(10);
   }
 
-  delay(2000);
+  delay(500);
 
-  for (uint16_t pulselen = SERVOMAX; pulselen > SERVOMIN; pulselen--) {
-    pwm.setPWM(servonum, 0, pulselen);
+  for (uint16_t pulselen = SERVO_1_MAX_PULSE; pulselen > SERVO_1_MIN_PULSE; pulselen--)
+  {
+    driver[0].setPWM(0, 0, pulselen);
+    driver[SERVO_2_DRIVER_ID].setPWM(SERVO_2_CHANNEL, 0, pulselen);
+    driver[SERVO_3_DRIVER_ID].setPWM(SERVO_3_CHANNEL, 0, pulselen);
+    driver[SERVO_4_DRIVER_ID].setPWM(SERVO_4_CHANNEL, 0, pulselen);
     delay(10);
   }
 
-  delay(2000);
+  delay(500);
 
   //Manual control for trial and error -  recommended to do this for each servo to find minimum and max values
   // if (Serial.available() > 0) { // Check if data is available to read
@@ -52,20 +63,4 @@ void loop() {
 
   // servonum++;
   // if (servonum > 0) servonum = 0; // Testing the first 8 servo channels
-}
-
-// You can use this function if you'd like to set the pulse length in seconds
-// e.g. setServoPulse(0, 0.001) is a ~1 millisecond pulse width. It's not precise!
-void setServoPulse(uint8_t n, double pulse) {
-  double pulselength;
-  
-  pulselength = 1000000;   // 1,000,000 us per second
-  pulselength /= SERVO_FREQ;   // Analog servos run at ~60 Hz updates
-  Serial.print(pulselength); Serial.println(" us per period"); 
-  pulselength /= 4096;  // 12 bits of resolution
-  Serial.print(pulselength); Serial.println(" us per bit"); 
-  pulse *= 1000000;  // convert input seconds to us
-  pulse /= pulselength;
-  Serial.println(pulse);
-  pwm.setPWM(n, 0, pulse);
 }
