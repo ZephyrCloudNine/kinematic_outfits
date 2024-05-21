@@ -25,6 +25,7 @@
 
 #define NUM_DRIVERS 2
 #define NUM_SERVOS 4
+#define NUM_LEDS 1
 
 /* config of each servo's connected driver,channel, max and minimum pulse lengths - each servo may slightly differ
 in physical limits so allows to adjust movement for each servo individually. May need trial and error to exactly fine tune,

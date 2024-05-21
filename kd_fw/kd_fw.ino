@@ -2,25 +2,34 @@
 #include "config.h"
 #include <Wire.h>
 #include <Adafruit_PWMServoDriver.h>
+#include "FastLED.h"
 
 //initializing PCA9685 servo instances 
 Adafruit_PWMServoDriver driver[NUM_DRIVERS] = {Adafruit_PWMServoDriver(D1_I2C_ADDR),Adafruit_PWMServoDriver(D2_I2C_ADDR)};
+// Define the array of leds
+CRGB leds[NUM_LEDS];
 
 void setup()
 {
-  Serial.begin(SERIAL_SPEED);
-  Serial.println("8 channel Servo test!");
-  Wire.begin(SDA_PIN,SCL_PIN);
+    Serial.begin(SERIAL_SPEED);
+    Serial.println("8 channel Servo test!");
 
-  driver[D1_ID].begin();
-  driver[D1_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
-  driver[D1_ID].setPWMFreq(SERVO_FREQ); 
-  driver[D2_ID].begin();
-  driver[D2_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
-  driver[D2_ID].setPWMFreq(SERVO_FREQ); 
+    //initialize RGB LED and turn it off 
+    FastLED.addLeds<NEOPIXEL, FASTLED_PIN>(leds, NUM_LEDS);
+    leds[0] = CRGB::Black;
+    FastLED.show();
 
-  delay(1500);
-  Serial.print("Set pulse width value: ");
+    Wire.begin(SDA_PIN,SCL_PIN);
+
+    driver[D1_ID].begin();
+    driver[D1_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
+    driver[D1_ID].setPWMFreq(SERVO_FREQ); 
+    driver[D2_ID].begin();
+    driver[D2_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
+    driver[D2_ID].setPWMFreq(SERVO_FREQ); 
+
+    delay(1500);
+    Serial.print("Set pulse width value: ");
 }
 
 void loop()
