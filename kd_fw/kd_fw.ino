@@ -11,17 +11,23 @@
 Adafruit_PWMServoDriver driver[NUM_DRIVERS] = {Adafruit_PWMServoDriver(D1_I2C_ADDR),Adafruit_PWMServoDriver(D2_I2C_ADDR)};
 // Define the array of leds
 CRGB leds[NUM_LEDS];
+uint16_t servo_pulse_state[NUM_SERVOS];
+bool servo_dir[NUM_SERVOS];
+uint32_t servo_timer[NUM_SERVOS];
 
 void setup()
 {
     Serial.begin(SERIAL_SPEED);
-    //initialize RGB LED and turn it off 
+    //initialize RGB LED - flash color to indicate startup 
     FastLED.addLeds<NEOPIXEL, FASTLED_PIN>(leds, NUM_LEDS);
+    leds[0] = CRGB::Green;
+    FastLED.show();
+    delay(1500);
     leds[0] = CRGB::Black;
     FastLED.show();
-
+    
     Wire.begin(SDA_PIN,SCL_PIN);
-
+    //initialize PCA9685 drivers
     driver[D1_ID].begin();
     driver[D1_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
     driver[D1_ID].setPWMFreq(SERVO_FREQ); 
@@ -29,39 +35,24 @@ void setup()
     driver[D2_ID].setOscillatorFrequency(PCA9685_OSC_FREQ);
     driver[D2_ID].setPWMFreq(SERVO_FREQ); 
 
-    Serial.println("For manual mode, enter params in the format(driver_id, servo_channel_id, pulse length)(eg: 0,2,145)");
+    for (uint8_t i=0;i<NUM_SERVOS;i++)
+    {
+      servo_pulse_state[i] = SERVO_ABS_SHL;
+      servo_dir[i] = 0;
+    }
+
+    // Serial.println("For manual mode, enter params in the format(driver_id, servo_channel_id, pulse length)(eg: 0,2,145)");
     delay(1500);
   
 }
 
 void loop()
 {
-  // Drive each servo one in a back/front gradual sweep
-  // Serial.println(servonum);
-  // for (uint16_t pulselen = SERVO_1_MIN_PULSE; pulselen < SERVO_1_MAX_PULSE; pulselen++)
-  // {
-  //   driver[SERVO_1_DRIVER_ID].setPWM(SERVO_1_CHANNEL, 0, pulselen);
-  //   driver[SERVO_2_DRIVER_ID].setPWM(SERVO_2_CHANNEL, 0, pulselen);
-  //   driver[SERVO_3_DRIVER_ID].setPWM(SERVO_3_CHANNEL, 0, pulselen);
-  //   driver[SERVO_4_DRIVER_ID].setPWM(SERVO_4_CHANNEL, 0, pulselen);
-  //   delay(10);
-  // }
-
-  // delay(500);
-
-  // for (uint16_t pulselen = SERVO_1_MAX_PULSE; pulselen > SERVO_1_MIN_PULSE; pulselen--)
-  // {
-  //   driver[SERVO_1_DRIVER_ID].setPWM(SERVO_1_CHANNEL, 0, pulselen);
-  //   driver[SERVO_2_DRIVER_ID].setPWM(SERVO_2_CHANNEL, 0, pulselen);
-  //   driver[SERVO_3_DRIVER_ID].setPWM(SERVO_3_CHANNEL, 0, pulselen);
-  //   driver[SERVO_4_DRIVER_ID].setPWM(SERVO_4_CHANNEL, 0, pulselen);
-  //   delay(10);
-  // }
-
-  // delay(500);
+  //Run servo sequence
+  runSequence();
 
   //Manual control for trial and error -  recommended to do this for each servo to find minimum and max values
-  manualCalibrateServo();
+  // manualCalibrateServo();
 }
 
 void manualCalibrateServo()
@@ -108,8 +99,65 @@ void manualCalibrateServo()
     Serial.print(pulse_len);
     Serial.println();
     
-    driver[driver_id].setPWM(channel_id, 0, pulse_len);
+    //drive specified servo
+    // driver[driver_id].setPWM(channel_id, 0, pulse_len);
   }
 }
 
+void asyncdriveServo(uint8_t servo_id,uint8_t driver_id, uint8_t channel_id, uint16_t pulse_start, uint16_t pulse_end)
+{
+  if (millis()-servo_timer[servo_id] > SERVO_UPDATE_INTERVAL_MS)
+  {  
+    if (servo_pulse_state[servo_id] < pulse_start)
+    servo_pulse_state[servo_id] = pulse_start;
+    driver[driver_id].setPWM(channel_id, 0, servo_pulse_state[servo_id]);
 
+    if (!servo_dir[servo_id])
+      servo_pulse_state[servo_id]++;
+    else if (servo_dir[servo_id])
+      servo_pulse_state[servo_id]--;
+
+    if (servo_pulse_state[servo_id] >= pulse_end || servo_pulse_state[servo_id] <= pulse_start)
+      servo_dir[servo_id]^=0x01;
+
+    Serial.println(servo_pulse_state[servo_id]);
+    
+    servo_timer[servo_id] = millis();
+  }
+}
+
+void runSequence()
+{
+  // asyncdriveServo(SERVO_1,SERVO_1_DRIVER_ID,SERVO_1_CHANNEL,SERVO_1_MIN_PULSE,SERVO_1_MAX_PULSE);
+  // asyncdriveServo(SERVO_2,SERVO_2_DRIVER_ID,SERVO_2_CHANNEL,SERVO_2_MIN_PULSE,SERVO_2_MAX_PULSE);
+  // asyncdriveServo(SERVO_3,SERVO_3_DRIVER_ID,SERVO_3_CHANNEL,SERVO_3_MIN_PULSE,SERVO_3_MAX_PULSE);
+  // asyncdriveServo(SERVO_4,SERVO_4_DRIVER_ID,SERVO_4_CHANNEL,SERVO_4_MIN_PULSE,SERVO_4_MAX_PULSE);
+  // asyncdriveServo(SERVO_5,SERVO_5_DRIVER_ID,SERVO_5_CHANNEL,SERVO_5_MIN_PULSE,SERVO_5_MAX_PULSE);
+  // asyncdriveServo(SERVO_6,SERVO_6_DRIVER_ID,SERVO_6_CHANNEL,SERVO_6_MIN_PULSE,SERVO_6_MAX_PULSE);
+  // asyncdriveServo(SERVO_7,SERVO_7_DRIVER_ID,SERVO_7_CHANNEL,SERVO_7_MIN_PULSE,SERVO_7_MAX_PULSE);
+
+
+  for (uint16_t pl=SERVO_1_MIN_PULSE;pl<SERVO_1_MAX_PULSE;pl++)
+  {
+    driver[SERVO_1_DRIVER_ID].setPWM(SERVO_1_CHANNEL, 0, pl);
+    driver[SERVO_2_DRIVER_ID].setPWM(SERVO_2_CHANNEL, 0, pl);
+    driver[SERVO_3_DRIVER_ID].setPWM(SERVO_3_CHANNEL, 0, pl);
+    driver[SERVO_4_DRIVER_ID].setPWM(SERVO_4_CHANNEL, 0, pl+125);
+    driver[SERVO_5_DRIVER_ID].setPWM(SERVO_5_CHANNEL, 0, pl+50);
+    driver[SERVO_6_DRIVER_ID].setPWM(SERVO_6_CHANNEL, 0, pl);
+    driver[SERVO_7_DRIVER_ID].setPWM(SERVO_7_CHANNEL, 0, pl);
+    delay(15);
+  }
+  
+  for (uint16_t pl=SERVO_1_MAX_PULSE;pl>SERVO_1_MIN_PULSE;pl--)
+  {
+    driver[SERVO_1_DRIVER_ID].setPWM(SERVO_1_CHANNEL, 0, pl);
+    driver[SERVO_2_DRIVER_ID].setPWM(SERVO_2_CHANNEL, 0, pl);
+    driver[SERVO_2_DRIVER_ID].setPWM(SERVO_3_CHANNEL, 0, pl);
+    driver[SERVO_3_DRIVER_ID].setPWM(SERVO_4_CHANNEL, 0, pl+125);
+    driver[SERVO_4_DRIVER_ID].setPWM(SERVO_5_CHANNEL, 0, pl+50);
+    driver[SERVO_5_DRIVER_ID].setPWM(SERVO_6_CHANNEL, 0, pl);
+    driver[SERVO_7_DRIVER_ID].setPWM(SERVO_7_CHANNEL, 0, pl);
+    delay(15);
+  }
+}
