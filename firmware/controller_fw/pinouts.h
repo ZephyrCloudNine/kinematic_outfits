@@ -3,7 +3,7 @@
 
 //ADC pins
 #define VBUS_MON PA5
-#define VBAT_MON PA10
+#define VBAT_MON PA4
 
 //button GPIO
 #define ACTION_BTN PA0

@@ -3,6 +3,14 @@
 
 #include "Arduino.h"
 
+#define ADC_RESOLUTION_BITS 12
+//Factor to multiply raw analogRead() to get voltage reading (V)
+//Configured with setting resolution to 12 bits, so max value is 4096, and fixing max voltage to 3.3V
+#define ADC_CONV_FACTOR 0.00081
+// Resistor divider ratio on ADC pins (10/(5.1+10))k 
+// Use this to get actual voltage value
+#define DIVIDER_RATIO 0.662
+
 // // I2C pin selection
 // #define SDA_PIN 18
 // #define SCL_PIN 19
