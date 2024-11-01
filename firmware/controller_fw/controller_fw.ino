@@ -3,11 +3,11 @@
 
 void setup()
 {
+  //configure all output pins
   pinMode(STAT1_LED,OUTPUT);
   pinMode(STAT2_LED,OUTPUT);
 
   pinMode(_5V_EN,OUTPUT);
-  //Enable 5V rail
   digitalWrite(_5V_EN,HIGH);
 
   pinMode(SV1_DOUT,OUTPUT);
@@ -22,7 +22,8 @@ void setup()
   Serial.begin(115200);
   Serial.println("Starting KM controller");
   delay(1000);
-
+  
+  //Set ADC resolution
   analogReadResolution(ADC_RESOLUTION_BITS);
 }
 
