@@ -20,13 +20,13 @@
 #define I2C_SCL PB8
 
 //servo outputs
-#define SV1_DIN PB1
-#define SV2_DIN PB0
-#define SV3_DIN PA7
-#define SV4_DIN PA6
-#define SV5_DIN PA3
-#define SV6_DIN PA2
-#define SV7_DIN PA1
-#define SV8_DIN PB6
+#define SV1_DOUT PB1
+#define SV2_DOUT PB0
+#define SV3_DOUT PA7
+#define SV4_DOUT PA6
+#define SV5_DOUT PA3
+#define SV6_DOUT PA2
+#define SV7_DOUT PA1
+#define SV8_DOUT PB6
 
 #endif
