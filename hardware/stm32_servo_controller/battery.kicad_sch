@@ -2838,7 +2838,7 @@
 		)
 		(uuid "f67fff9a-a392-40a4-843b-1f5658a53d90")
 	)
-	(text "Charging voltage is 4.2V max (default)\nNTC functionality not used\nD4 and D5 indicate charging and charging done respectively\n\nICHRG sets charging current, I = 135000/R\nDefault is 2.1A (if NC)\nPopulate R24 to adjust charging current\n\n"
+	(text "Charging voltage is 4.2V max (default)\nNTC functionality not used\nD4 and D5 indicate charging and charging done respectively\n\nICHRG sets charging current, I = 135000/R\nDefault is 2.1A (if NC)\nPopulate R24 to adjust charging current\n\nUSE IP2312_VSET variant! \n\n"
 		(exclude_from_sim no)
 		(at 185.928 144.018 0)
 		(effects
