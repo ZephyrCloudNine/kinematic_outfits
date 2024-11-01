@@ -11,6 +11,21 @@
 // Use this to get actual voltage value
 #define DIVIDER_RATIO 0.662
 
+//max number of servos supported by board
+#define NUM_SERVOS 8
+
+//servo indexes
+#define SV1 0
+#define SV2 1
+#define SV3 2
+#define SV4 3
+#define SV5 4
+#define SV6 5
+#define SV7 6
+#define SV8 7
+
+#define VBAT_UVLO 3.50
+
 // // I2C pin selection
 // #define SDA_PIN 18
 // #define SCL_PIN 19
@@ -35,10 +50,6 @@
 // //servo update interval should ideally be multiple of 50Hz/20ms (20ms,40ms,80ms)
 // #define SERVO_FREQ 50 
 // #define SERVO_UPDATE_PERIOD_MS 20
-
-// #define NUM_DRIVERS 2
-// #define NUM_SERVOS 15
-// #define NUM_LEDS 1
 
 // //servo starting hard stop limit (approximate for SG90 type)
 // #define SERVO_ABS_SHL 120
