@@ -25,15 +25,21 @@ void setup()
   pinMode(SV8_DOUT,OUTPUT);
 
   Serial.begin(115200);
+  delay(3000);
   Serial.println("Starting KM controller");
-  delay(1000);
   
   //Set ADC resolution
   analogReadResolution(ADC_RESOLUTION_BITS);
 
   //Set up servo instances
   servos[SV1].attach(SV1_DOUT);
+  servos[SV2].attach(SV2_DOUT);
   servos[SV3].attach(SV3_DOUT);
+  servos[SV4].attach(SV4_DOUT);
+  servos[SV5].attach(SV5_DOUT);
+  servos[SV6].attach(SV6_DOUT);
+  servos[SV7].attach(SV7_DOUT);
+  servos[SV8].attach(SV8_DOUT);
 }
 
 void loop()
@@ -47,35 +53,39 @@ void loop()
   Serial.println();
 
   //Flash on-board LED's
-  // digitalWrite(STAT1_LED,HIGH);
-  delay(500);
-  // digitalWrite(STAT1_LED,LOW);
-  digitalWrite(STAT2_LED,HIGH);
-  delay(500);
-  digitalWrite(STAT2_LED,LOW);
+  // digitalWrite(STAT1_LED,!digitalRead(STAT1_LED));
+  digitalWrite(STAT2_LED,!digitalRead(STAT2_LED));
 
-  //Toggle servo outputs
-  // digitalWrite(SV1_DOUT,!digitalRead(SV1_DOUT));
-  // digitalWrite(SV2_DOUT,!digitalRead(SV2_DOUT));
-  // digitalWrite(SV3_DOUT,!digitalRead(SV3_DOUT));
-  // digitalWrite(SV4_DOUT,!digitalRead(SV4_DOUT));
-  // digitalWrite(SV5_DOUT,!digitalRead(SV5_DOUT));
-  // digitalWrite(SV6_DOUT,!digitalRead(SV6_DOUT));
-  // digitalWrite(SV7_DOUT,!digitalRead(SV7_DOUT));
-  // digitalWrite(SV8_DOUT,!digitalRead(SV8_DOUT));
-
-  //Check for battery voltage while running servos
+  //Get servo to zero position
+  servos[SV1].write(5); 
+  
+  // Check for battery voltage while running servos
   if (readCorrectedVoltage(VBAT_MON)>VBAT_UVLO)
   for (int pos = 20; pos <= 100; pos += 1) { 
-    servos[SV1].write(pos); 
-    servos[SV3].write(pos);               
+    // servos[SV1].write(pos); 
+    servos[SV2].write(pos); 
+    servos[SV3].write(pos);      
+    servos[SV4].write(pos); 
+    servos[SV5].write(pos); 
+    servos[SV6].write(pos); 
+    servos[SV7].write(pos); 
+    servos[SV8].write(pos);    
+
     delay(15);                       
   }
   for (int pos = 100; pos >= 20; pos -= 1) {
-    servos[SV1].write(pos); 
-    servos[SV3].write(pos);                     
+    // servos[SV1].write(pos); 
+    servos[SV2].write(pos); 
+    servos[SV3].write(pos);      
+    servos[SV4].write(pos); 
+    servos[SV5].write(pos); 
+    servos[SV6].write(pos); 
+    servos[SV7].write(pos); 
+    servos[SV8].write(pos);               
     delay(15);                      
   }
+ 
+    delay(500); 
 }
 
 float readCorrectedVoltage(uint32_t _pin)
