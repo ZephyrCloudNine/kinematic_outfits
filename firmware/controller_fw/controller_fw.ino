@@ -2,7 +2,7 @@
 #include "pinouts.h"
 #include <PRDC_ServoHT.h>
 
-// create servo object to control a servo
+// create servo object array
 ServoHT servos[NUM_SERVOS];  
 
 void setup()
@@ -10,7 +10,6 @@ void setup()
   //configure all output pins
   pinMode(STAT1_LED,OUTPUT);
   pinMode(STAT2_LED,OUTPUT);
-  digitalWrite(STAT1_LED,LOW);
 
   pinMode(_5V_EN,OUTPUT);
   digitalWrite(_5V_EN,HIGH);
@@ -24,8 +23,11 @@ void setup()
   pinMode(SV7_DOUT,OUTPUT);
   pinMode(SV8_DOUT,OUTPUT);
 
+  //Flash LED's to indicate startup
+  LEDstartupindicate();
+
   Serial.begin(115200);
-  delay(3000);
+  delay(1000);
   Serial.println("Starting KM controller");
   
   //Set ADC resolution
@@ -52,14 +54,10 @@ void loop()
   Serial.println(readCorrectedVoltage(VBUS_MON),2);
   Serial.println();
 
-  //Flash on-board LED's
-  // digitalWrite(STAT1_LED,!digitalRead(STAT1_LED));
-  digitalWrite(STAT2_LED,!digitalRead(STAT2_LED));
-
-  //Get servo to zero position
+  // Get servo to zero position
   servos[SV1].write(5); 
   
-  // Check for battery voltage while running servos
+  //Check for battery voltage while running servos
   if (readCorrectedVoltage(VBAT_MON)>VBAT_UVLO)
   for (int pos = 20; pos <= 100; pos += 1) { 
     // servos[SV1].write(pos); 
@@ -88,8 +86,29 @@ void loop()
     delay(500); 
 }
 
+//Function converts raw readings to volts, taking resistor dividers into account as well
 float readCorrectedVoltage(uint32_t _pin)
 { 
   float temp_reading = analogRead(_pin);
   return ((temp_reading*(ADC_CONV_FACTOR/DIVIDER_RATIO)));
+}
+
+//LED flash pattern on controller startup
+void LEDstartupindicate()
+{
+  for (uint8_t i=0;i<2;i++)
+  {
+    digitalWrite(STAT1_LED,HIGH);
+    digitalWrite(STAT2_LED,LOW);
+    delay(500);
+    digitalWrite(STAT1_LED,LOW);
+    digitalWrite(STAT2_LED,HIGH);
+    delay(500);
+  }
+
+  digitalWrite(STAT1_LED,HIGH);
+  digitalWrite(STAT2_LED,HIGH);
+  delay(500); 
+  digitalWrite(STAT1_LED,LOW);
+  digitalWrite(STAT2_LED,LOW);
 }
