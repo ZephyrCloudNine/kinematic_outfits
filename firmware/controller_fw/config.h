@@ -11,6 +11,9 @@
 // Use this to get actual voltage value
 #define DIVIDER_RATIO 0.662
 
+//Number of analog samples to capture to derive average voltage reading
+#define SAMPLE_COUNT 10
+
 //Battery low voltage threshold
 #define VBAT_UVLO 3.50
 

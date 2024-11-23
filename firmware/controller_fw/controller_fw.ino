@@ -94,11 +94,18 @@ void loop()
     delay(500); 
 }
 
-//Function converts raw readings to volts, taking resistor dividers into account as well
+//Function calculates average voltage reading from raw analog readings - taking into account divider ratios too
 float readCorrectedVoltage(uint32_t _pin)
 { 
-  float temp_reading = analogRead(_pin);
-  return ((temp_reading*(ADC_CONV_FACTOR/DIVIDER_RATIO)));
+  float temp_reading,avg_volts;
+
+  for (uint8_t i;i<SAMPLE_COUNT;i++)
+  {
+    temp_reading += analogRead(_pin);
+  }
+
+  avg_volts = (temp_reading/SAMPLE_COUNT)*(ADC_CONV_FACTOR/DIVIDER_RATIO);
+  return avg_volts;
 }
 
 //LED flash pattern on controller startup
