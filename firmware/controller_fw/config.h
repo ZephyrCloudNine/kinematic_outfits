@@ -60,5 +60,7 @@ pulse value is 12 bit(0-4096), SG90 servos can range between 100-450 absolute mi
 #define SERVO_8_MIN_POS 5
 #define SERVO_8_MAX_POS 90
 
+#define STARTUP_DELAY_MS 2000
+
 #endif
 

@@ -23,15 +23,15 @@ void setup()
   pinMode(SV7_DOUT,OUTPUT);
   pinMode(SV8_DOUT,OUTPUT);
 
+  //Set ADC resolution
+  analogReadResolution(ADC_RESOLUTION_BITS);
+
   //Flash LED's to indicate startup
   LEDstartupindicate();
 
   Serial.begin(115200);
-  delay(1000);
+  delay(STARTUP_DELAY_MS);
   Serial.println("----Starting KM controller----");
-  
-  //Set ADC resolution
-  analogReadResolution(ADC_RESOLUTION_BITS);
 
   //Set up servo instances
   servos[SERVO_1].attach(SV1_DOUT);
@@ -42,6 +42,17 @@ void setup()
   servos[SERVO_6].attach(SV6_DOUT);
   servos[SERVO_7].attach(SV7_DOUT);
   servos[SERVO_8].attach(SV8_DOUT);
+
+  //set servos to initial desired position
+  servos[SERVO_1].write(SERVO_1_MIN_POS); 
+  servos[SERVO_2].write(SERVO_2_MIN_POS); 
+  servos[SERVO_3].write(SERVO_3_MIN_POS);      
+  servos[SERVO_4].write(SERVO_4_MIN_POS); 
+  servos[SERVO_5].write(SERVO_5_MIN_POS); 
+  servos[SERVO_6].write(SERVO_6_MIN_POS); 
+  servos[SERVO_7].write(SERVO_7_MIN_POS); 
+  servos[SERVO_8].write(SERVO_8_MIN_POS);  
+  
 }
 
 void loop()
@@ -79,7 +90,7 @@ void loop()
     servos[SERVO_8].write(pos);               
     delay(15);                      
   }
- 
+
     delay(500); 
 }
 
