@@ -28,20 +28,20 @@ void setup()
 
   Serial.begin(115200);
   delay(1000);
-  Serial.println("Starting KM controller");
+  Serial.println("----Starting KM controller----");
   
   //Set ADC resolution
   analogReadResolution(ADC_RESOLUTION_BITS);
 
   //Set up servo instances
-  servos[SV1].attach(SV1_DOUT);
-  servos[SV2].attach(SV2_DOUT);
-  servos[SV3].attach(SV3_DOUT);
-  servos[SV4].attach(SV4_DOUT);
-  servos[SV5].attach(SV5_DOUT);
-  servos[SV6].attach(SV6_DOUT);
-  servos[SV7].attach(SV7_DOUT);
-  servos[SV8].attach(SV8_DOUT);
+  servos[SERVO_1].attach(SV1_DOUT);
+  servos[SERVO_2].attach(SV2_DOUT);
+  servos[SERVO_3].attach(SV3_DOUT);
+  servos[SERVO_4].attach(SV4_DOUT);
+  servos[SERVO_5].attach(SV5_DOUT);
+  servos[SERVO_6].attach(SV6_DOUT);
+  servos[SERVO_7].attach(SV7_DOUT);
+  servos[SERVO_8].attach(SV8_DOUT);
 }
 
 void loop()
@@ -53,33 +53,30 @@ void loop()
   Serial.print("VBUS(V) :");
   Serial.println(readCorrectedVoltage(VBUS_MON),2);
   Serial.println();
-
-  // Get servo to zero position
-  servos[SV1].write(5); 
-  
+ 
   //Check for battery voltage while running servos
   if (readCorrectedVoltage(VBAT_MON)>VBAT_UVLO)
   for (int pos = 20; pos <= 100; pos += 1) { 
-    // servos[SV1].write(pos); 
-    servos[SV2].write(pos); 
-    servos[SV3].write(pos);      
-    servos[SV4].write(pos); 
-    servos[SV5].write(pos); 
-    servos[SV6].write(pos); 
-    servos[SV7].write(pos); 
-    servos[SV8].write(pos);    
+    servos[SERVO_1].write(pos); 
+    servos[SERVO_2].write(pos); 
+    servos[SERVO_3].write(pos);      
+    servos[SERVO_4].write(pos); 
+    servos[SERVO_5].write(pos); 
+    servos[SERVO_6].write(pos); 
+    servos[SERVO_7].write(pos); 
+    servos[SERVO_8].write(pos);    
 
     delay(15);                       
   }
   for (int pos = 100; pos >= 20; pos -= 1) {
-    // servos[SV1].write(pos); 
-    servos[SV2].write(pos); 
-    servos[SV3].write(pos);      
-    servos[SV4].write(pos); 
-    servos[SV5].write(pos); 
-    servos[SV6].write(pos); 
-    servos[SV7].write(pos); 
-    servos[SV8].write(pos);               
+    servos[SERVO_1].write(pos); 
+    servos[SERVO_2].write(pos); 
+    servos[SERVO_3].write(pos);      
+    servos[SERVO_4].write(pos); 
+    servos[SERVO_5].write(pos); 
+    servos[SERVO_6].write(pos); 
+    servos[SERVO_7].write(pos); 
+    servos[SERVO_8].write(pos);               
     delay(15);                      
   }
  
@@ -112,3 +109,4 @@ void LEDstartupindicate()
   digitalWrite(STAT1_LED,LOW);
   digitalWrite(STAT2_LED,LOW);
 }
+
