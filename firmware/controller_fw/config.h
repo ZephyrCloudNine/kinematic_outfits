@@ -17,6 +17,8 @@
 //Battery low voltage threshold
 #define VBAT_UVLO 3.50
 
+#define VOLTAGES_POLL_INT_MS 1000
+
 //END number of servos supported by board
 #define NUM_SERVOS 8
 // Analog servos run at ~50 Hz updates
@@ -38,8 +40,8 @@
 #define SERVO_2_END_POS 90
 
 #define SERVO_3 2
-#define SERVO_3_START_POS 90
-#define SERVO_3_END_POS 5
+#define SERVO_3_START_POS 5
+#define SERVO_3_END_POS 90
 
 #define SERVO_4 3
 #define SERVO_4_START_POS 5

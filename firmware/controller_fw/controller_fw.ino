@@ -6,6 +6,9 @@
 // create servo object array
 ServoHT servos[NUM_SERVOS];  
 MillisTimer servos_handler_timer(SERVO_UPDATE_PERIOD_MS);
+MillisTimer voltages_poll_timer(VOLTAGES_POLL_INT_MS);
+
+float vbat,vbus;
 
 void setup()
 {
@@ -65,22 +68,20 @@ void setup()
   servos[SERVO_7].write(SERVO_7_START_POS); 
   servos[SERVO_8].write(SERVO_8_START_POS);  
 
-  //Attach callback to soft timer 
+  //Attach callback to soft timers 
   servos_handler_timer.expiredHandler(servoRunSequence);
+  voltages_poll_timer.expiredHandler(readVoltages);
+  //Start timers
   servos_handler_timer.start();
+  voltages_poll_timer.start();
 }
 
 void loop()
-{
-  // //Print VBAT and VBUS voltages
-  // Serial.print("VBAT(V) :");
-  // Serial.println(readCorrectedVoltage(VBAT_MON),2);
-
-  // Serial.print("VBUS(V) :");
-  // Serial.println(readCorrectedVoltage(VBUS_MON),2);
-  // Serial.println();
- 
+{  
+  //Run servo sequence
   servos_handler_timer.run();
+  //Run voltages poll timer
+  voltages_poll_timer.run();
 }
 
 //Function calculates average voltage reading from raw analog readings - taking into account divider ratios too
@@ -127,4 +128,19 @@ void servoRunSequence(MillisTimer &timer_handle)
     else if (servos[i].readDir())
       servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
   }
+}
+
+//Callback function to monitor battery and USB line voltages
+void readVoltages(MillisTimer &mt)
+{
+  vbat = readCorrectedVoltage(VBAT_MON);
+  vbus = readCorrectedVoltage(VBUS_MON);
+
+  //Print VBAT and VBUS voltages
+  Serial.print("VBAT(V) :");
+  Serial.println(vbat,2);
+
+  Serial.print("VBUS(V) :");
+  Serial.println(vbus,2);
+  Serial.println();
 }
