@@ -16,8 +16,10 @@
 
 //Battery low voltage threshold
 #define VBAT_UVLO 3.50
-
 #define VOLTAGES_POLL_INT_MS 1000
+
+//VBUS min threshold
+#define VBUS_THRESH 4.80
 
 //END number of servos supported by board
 #define NUM_SERVOS 8

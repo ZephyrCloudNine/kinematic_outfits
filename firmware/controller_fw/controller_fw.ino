@@ -82,6 +82,15 @@ void loop()
   servos_handler_timer.run();
   //Run voltages poll timer
   voltages_poll_timer.run();
+
+  //if VBUS voltage detected - USB cable is plugged in for charging. Halt loop
+  if (vbus>VBUS_THRESH)
+  {
+    while (true)
+    {
+      delay(1000);
+    }
+  }
 }
 
 //Function calculates average voltage reading from raw analog readings - taking into account divider ratios too
