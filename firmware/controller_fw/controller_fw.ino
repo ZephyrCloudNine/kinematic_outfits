@@ -1,9 +1,11 @@
 #include "config.h"
 #include "pinouts.h"
-#include <PRDC_ServoHT.h>
+#include "src/PRDC_ServoHT/PRDC_ServoHT.h"
+#include "src/MillisTimer/MillisTimer.h"
 
 // create servo object array
 ServoHT servos[NUM_SERVOS];  
+MillisTimer servos_handler_timer(SERVO_UPDATE_PERIOD_MS);
 
 void setup()
 {
@@ -27,11 +29,21 @@ void setup()
   analogReadResolution(ADC_RESOLUTION_BITS);
 
   //Flash LED's to indicate startup
-  LEDstartupindicate();
+  LEDStartupIndicate();
 
   Serial.begin(115200);
   delay(STARTUP_DELAY_MS);
   Serial.println("----Starting KM controller----");
+
+  //Set desired servo min-max limits
+  servos[SERVO_1].setLimits(SERVO_1_START_POS,SERVO_1_END_POS);
+  servos[SERVO_2].setLimits(SERVO_2_START_POS,SERVO_2_END_POS);
+  servos[SERVO_3].setLimits(SERVO_3_START_POS,SERVO_3_END_POS);
+  servos[SERVO_4].setLimits(SERVO_4_START_POS,SERVO_4_END_POS);
+  servos[SERVO_5].setLimits(SERVO_5_START_POS,SERVO_5_END_POS);
+  servos[SERVO_6].setLimits(SERVO_6_START_POS,SERVO_6_END_POS);
+  servos[SERVO_7].setLimits(SERVO_7_START_POS,SERVO_7_END_POS);
+  servos[SERVO_8].setLimits(SERVO_8_START_POS,SERVO_8_END_POS);
 
   //Set up servo instances
   servos[SERVO_1].attach(SV1_DOUT);
@@ -44,54 +56,31 @@ void setup()
   servos[SERVO_8].attach(SV8_DOUT);
 
   //set servos to initial desired position
-  servos[SERVO_1].write(SERVO_1_MIN_POS); 
-  servos[SERVO_2].write(SERVO_2_MIN_POS); 
-  servos[SERVO_3].write(SERVO_3_MIN_POS);      
-  servos[SERVO_4].write(SERVO_4_MIN_POS); 
-  servos[SERVO_5].write(SERVO_5_MIN_POS); 
-  servos[SERVO_6].write(SERVO_6_MIN_POS); 
-  servos[SERVO_7].write(SERVO_7_MIN_POS); 
-  servos[SERVO_8].write(SERVO_8_MIN_POS);  
-  
+  servos[SERVO_1].write(SERVO_1_START_POS); 
+  servos[SERVO_2].write(SERVO_2_START_POS); 
+  servos[SERVO_3].write(SERVO_3_START_POS);      
+  servos[SERVO_4].write(SERVO_4_START_POS); 
+  servos[SERVO_5].write(SERVO_5_START_POS); 
+  servos[SERVO_6].write(SERVO_6_START_POS); 
+  servos[SERVO_7].write(SERVO_7_START_POS); 
+  servos[SERVO_8].write(SERVO_8_START_POS);  
+
+  //Attach callback to soft timer 
+  servos_handler_timer.expiredHandler(servoRunSequence);
+  servos_handler_timer.start();
 }
 
 void loop()
 {
-  //Print VBAT and VBUS voltages
-  Serial.print("VBAT(V) :");
-  Serial.println(readCorrectedVoltage(VBAT_MON),2);
+  // //Print VBAT and VBUS voltages
+  // Serial.print("VBAT(V) :");
+  // Serial.println(readCorrectedVoltage(VBAT_MON),2);
 
-  Serial.print("VBUS(V) :");
-  Serial.println(readCorrectedVoltage(VBUS_MON),2);
-  Serial.println();
+  // Serial.print("VBUS(V) :");
+  // Serial.println(readCorrectedVoltage(VBUS_MON),2);
+  // Serial.println();
  
-  //Check for battery voltage while running servos
-  if (readCorrectedVoltage(VBAT_MON)>VBAT_UVLO)
-  for (int pos = 20; pos <= 100; pos += 1) { 
-    servos[SERVO_1].write(pos); 
-    servos[SERVO_2].write(pos); 
-    servos[SERVO_3].write(pos);      
-    servos[SERVO_4].write(pos); 
-    servos[SERVO_5].write(pos); 
-    servos[SERVO_6].write(pos); 
-    servos[SERVO_7].write(pos); 
-    servos[SERVO_8].write(pos);    
-
-    delay(15);                       
-  }
-  for (int pos = 100; pos >= 20; pos -= 1) {
-    servos[SERVO_1].write(pos); 
-    servos[SERVO_2].write(pos); 
-    servos[SERVO_3].write(pos);      
-    servos[SERVO_4].write(pos); 
-    servos[SERVO_5].write(pos); 
-    servos[SERVO_6].write(pos); 
-    servos[SERVO_7].write(pos); 
-    servos[SERVO_8].write(pos);               
-    delay(15);                      
-  }
-
-    delay(500); 
+  servos_handler_timer.run();
 }
 
 //Function calculates average voltage reading from raw analog readings - taking into account divider ratios too
@@ -109,7 +98,7 @@ float readCorrectedVoltage(uint32_t _pin)
 }
 
 //LED flash pattern on controller startup
-void LEDstartupindicate()
+void LEDStartupIndicate()
 {
   for (uint8_t i=0;i<2;i++)
   {
@@ -128,3 +117,14 @@ void LEDstartupindicate()
   digitalWrite(STAT2_LED,LOW);
 }
 
+//Soft timer callback to handle updating servos
+void servoRunSequence(MillisTimer &timer_handle)
+{ 
+  for (int i=SERVO_1;i<=SERVO_8;i++)
+  { 
+    if (!servos[i].readDir())
+      servos[i].write(servos[i].read()+SERVO_STEP_DEGREES);
+    else if (servos[i].readDir())
+      servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
+  }
+}
