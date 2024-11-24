@@ -40,6 +40,11 @@ ServoHT::ServoHT(){
   if (ServoCount < MAX_SERVOS) {
     this->servoIndex = ServoCount++; // assign a servo index to this instance
     servos[this->servoIndex].ticks = DEFAULT_PULSE_WIDTH;   // store default values
+
+    //default start and end positions in degrees
+    _start_pos = 0;
+    _end_pos = 180;
+
   } else {
     this->servoIndex = INVALID_SERVO;  // too many servos
   }
@@ -159,4 +164,38 @@ int ServoHT::readMicroseconds(){
 // --------------------
 bool ServoHT::attached(){
   return servos[this->servoIndex].Pin.isActive;
+}
+
+void ServoHT::setLimits(uint8_t start_pos,uint8_t end_pos)
+{
+  _start_pos = start_pos;
+  _end_pos = end_pos;
+}
+
+bool ServoHT::readDir()
+{
+  if (_end_pos > _start_pos)
+  {
+    if (read()>=_end_pos)
+    {
+      dir = 1;
+    }
+    else if (read()<=_start_pos)
+    {
+      dir = 0;
+    }
+  }
+  else
+  {
+    if (read()>=_start_pos)
+    {
+      dir = 1;
+    }
+    else if (read()<=_end_pos)
+    {
+      dir = 0;
+    }
+  }
+ 
+  return dir;
 }
