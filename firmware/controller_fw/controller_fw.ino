@@ -74,23 +74,46 @@ void setup()
   //Start timers
   servos_handler_timer.start();
   voltages_poll_timer.start();
+
+  //Sample voltages on startup
+  readVoltages();
 }
 
 void loop()
-{  
-  //Run servo sequence
+{ 
+  //Check if VBAT is below low battery threshold
+  if (vbat<VBAT_UVLO)
+  {
+    //Halt loop - and flash low battery indicator
+    while (true)
+    {
+      digitalWrite(STAT2_LED,HIGH);
+      delay(500);
+      digitalWrite(STAT2_LED,LOW);
+      delay(3000);
+    }
+  }
+  //if VBUS voltage detected - USB cable is plugged in for charging. Halt loop and enter sleep mode
+  if (vbus>VBUS_THRESH)
+  {   
+      //Flash LED to indicate charging has started
+      digitalWrite(STAT1_LED,HIGH);
+      delay(2500);
+      digitalWrite(STAT1_LED,LOW);
+      delay(1000);
+
+      //Enter sleep mode
+      while(true)
+      {
+        HAL_SuspendTick();
+        HAL_PWR_EnterSLEEPMode(PWR_MAINREGULATOR_ON, PWR_SLEEPENTRY_WFI);      
+      }
+  }
+
+   //Run servo sequence
   servos_handler_timer.run();
   //Run voltages poll timer
   voltages_poll_timer.run();
-
-  //if VBUS voltage detected - USB cable is plugged in for charging. Halt loop
-  if (vbus>VBUS_THRESH)
-  {
-    while (true)
-    {
-      delay(1000);
-    }
-  }
 }
 
 //Function calculates average voltage reading from raw analog readings - taking into account divider ratios too
@@ -114,10 +137,10 @@ void LEDStartupIndicate()
   {
     digitalWrite(STAT1_LED,HIGH);
     digitalWrite(STAT2_LED,LOW);
-    delay(500);
+    delay(250);
     digitalWrite(STAT1_LED,LOW);
     digitalWrite(STAT2_LED,HIGH);
-    delay(500);
+    delay(250);
   }
 
   digitalWrite(STAT1_LED,HIGH);
@@ -139,8 +162,8 @@ void servoRunSequence(MillisTimer &timer_handle)
   }
 }
 
-//Callback function to monitor battery and USB line voltages
-void readVoltages(MillisTimer &mt)
+// function to monitor battery and USB line voltages
+void readVoltages()
 {
   vbat = readCorrectedVoltage(VBAT_MON);
   vbus = readCorrectedVoltage(VBUS_MON);
@@ -153,3 +176,10 @@ void readVoltages(MillisTimer &mt)
   Serial.println(vbus,2);
   Serial.println();
 }
+
+//Callback wrapper function to periodically monitor battery and USB line voltages
+void readVoltages(MillisTimer &mt)
+{
+  readVoltages();
+}
+
