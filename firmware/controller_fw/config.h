@@ -3,6 +3,12 @@
 
 #include "Arduino.h"
 
+//uncomment the appropriate config based on target device variant
+#define VARIANT_A 
+// #define VARIANT_B
+// #define VARIANT_C
+// #define VARIANT_D
+
 #define ADC_RESOLUTION_BITS 12
 //Factor to multiply raw analogRead() to get voltage reading (V)
 //Configured with setting resolution to 12 bits, so END value is 4096, and fixing END voltage to 3.3V
@@ -29,43 +35,79 @@
 #define SERVO_UPDATE_PERIOD_MS 20
 #define SERVO_STEP_DEGREES 1
 
-//servo starting hard stop limit (approximate for SG90 type)
-#define SERVO_ABS_SHL 120
-
-/*servo config, index, start and end positions */
-#define SERVO_1 0
-#define SERVO_1_START_POS 5
-#define SERVO_1_END_POS 90
-
-#define SERVO_2 1
-#define SERVO_2_START_POS 5
-#define SERVO_2_END_POS 90
-
-#define SERVO_3 2
-#define SERVO_3_START_POS 5
-#define SERVO_3_END_POS 90
-
-#define SERVO_4 3
-#define SERVO_4_START_POS 5
-#define SERVO_4_END_POS 90
-
-#define SERVO_5 4
-#define SERVO_5_START_POS 5
-#define SERVO_5_END_POS 90
-
-#define SERVO_6 5
-#define SERVO_6_START_POS 5
-#define SERVO_6_END_POS 90
-
-#define SERVO_7 6
-#define SERVO_7_START_POS 5
-#define SERVO_7_END_POS 90
-
-#define SERVO_8 7
-#define SERVO_8_START_POS 5
-#define SERVO_8_END_POS 90
-
+//Delay before starting operations - adjust as needed
 #define STARTUP_DELAY_MS 2000
 
+/*servo config, index, start and end positions - this is variant specific and can be customized*/
+#ifdef VARIANT_A
+
+    #define SERVO_1 0
+    #define SERVO_1_START_POS 5
+    #define SERVO_1_END_POS 90
+
+    #define SERVO_2 1
+    #define SERVO_2_START_POS 5
+    #define SERVO_2_END_POS 90
+
+    #define SERVO_3 2
+    #define SERVO_3_START_POS 5
+    #define SERVO_3_END_POS 90
+
+    #define SERVO_4 3
+    #define SERVO_4_START_POS 5
+    #define SERVO_4_END_POS 90
+
+    #define SERVO_5 4
+    #define SERVO_5_START_POS 5
+    #define SERVO_5_END_POS 90
+
+    #define SERVO_6 5
+    #define SERVO_6_START_POS 5
+    #define SERVO_6_END_POS 90
+
+    #define SERVO_7 6
+    #define SERVO_7_START_POS 5
+    #define SERVO_7_END_POS 90
+
+    #define SERVO_8 7
+    #define SERVO_8_START_POS 5
+    #define SERVO_8_END_POS 90
+
+#endif
+
+#ifdef VARIANT_B
+
+    #define SERVO_1 0
+    #define SERVO_1_START_POS 5
+    #define SERVO_1_END_POS 90
+
+    #define SERVO_2 1
+    #define SERVO_2_START_POS 5
+    #define SERVO_2_END_POS 90
+
+    #define SERVO_3 2
+    #define SERVO_3_START_POS 5
+    #define SERVO_3_END_POS 90
+
+    #define SERVO_4 3
+    #define SERVO_4_START_POS 5
+    #define SERVO_4_END_POS 90
+#endif
+
+#ifdef VARIANT_C
+
+    #define SERVO_1 0
+    #define SERVO_1_START_POS 5
+    #define SERVO_1_END_POS 90
+
+#endif
+
+#ifdef VARIANT_D
+
+    #define SERVO_1 0
+    #define SERVO_1_START_POS 5
+    #define SERVO_1_END_POS 90
+
+#endif
 #endif
 

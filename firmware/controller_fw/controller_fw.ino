@@ -36,37 +36,83 @@ void setup()
 
   Serial.begin(115200);
   delay(STARTUP_DELAY_MS);
-  Serial.println("----Starting KM controller----");
+  Serial.print("----Starting KM controller:");
 
-  //Set desired servo min-max limits
-  servos[SERVO_1].setLimits(SERVO_1_START_POS,SERVO_1_END_POS);
-  servos[SERVO_2].setLimits(SERVO_2_START_POS,SERVO_2_END_POS);
-  servos[SERVO_3].setLimits(SERVO_3_START_POS,SERVO_3_END_POS);
-  servos[SERVO_4].setLimits(SERVO_4_START_POS,SERVO_4_END_POS);
-  servos[SERVO_5].setLimits(SERVO_5_START_POS,SERVO_5_END_POS);
-  servos[SERVO_6].setLimits(SERVO_6_START_POS,SERVO_6_END_POS);
-  servos[SERVO_7].setLimits(SERVO_7_START_POS,SERVO_7_END_POS);
-  servos[SERVO_8].setLimits(SERVO_8_START_POS,SERVO_8_END_POS);
+  #ifdef VARIANT_A
 
-  //Set up servo instances
-  servos[SERVO_1].attach(SV1_DOUT);
-  servos[SERVO_2].attach(SV2_DOUT);
-  servos[SERVO_3].attach(SV3_DOUT);
-  servos[SERVO_4].attach(SV4_DOUT);
-  servos[SERVO_5].attach(SV5_DOUT);
-  servos[SERVO_6].attach(SV6_DOUT);
-  servos[SERVO_7].attach(SV7_DOUT);
-  servos[SERVO_8].attach(SV8_DOUT);
+    Serial.println(" Device A----");
 
-  //set servos to initial desired position
-  servos[SERVO_1].write(SERVO_1_START_POS); 
-  servos[SERVO_2].write(SERVO_2_START_POS); 
-  servos[SERVO_3].write(SERVO_3_START_POS);      
-  servos[SERVO_4].write(SERVO_4_START_POS); 
-  servos[SERVO_5].write(SERVO_5_START_POS); 
-  servos[SERVO_6].write(SERVO_6_START_POS); 
-  servos[SERVO_7].write(SERVO_7_START_POS); 
-  servos[SERVO_8].write(SERVO_8_START_POS);  
+    //Set desired servo min-max limits
+    servos[SERVO_1].setLimits(SERVO_1_START_POS,SERVO_1_END_POS);
+    servos[SERVO_2].setLimits(SERVO_2_START_POS,SERVO_2_END_POS);
+    servos[SERVO_3].setLimits(SERVO_3_START_POS,SERVO_3_END_POS);
+    servos[SERVO_4].setLimits(SERVO_4_START_POS,SERVO_4_END_POS);
+    servos[SERVO_5].setLimits(SERVO_5_START_POS,SERVO_5_END_POS);
+    servos[SERVO_6].setLimits(SERVO_6_START_POS,SERVO_6_END_POS);
+    servos[SERVO_7].setLimits(SERVO_7_START_POS,SERVO_7_END_POS);
+    servos[SERVO_8].setLimits(SERVO_8_START_POS,SERVO_8_END_POS);
+
+    //Set up servo instances
+    servos[SERVO_1].attach(SV1_DOUT);
+    servos[SERVO_2].attach(SV2_DOUT);
+    servos[SERVO_3].attach(SV3_DOUT);
+    servos[SERVO_4].attach(SV4_DOUT);
+    servos[SERVO_5].attach(SV5_DOUT);
+    servos[SERVO_6].attach(SV6_DOUT);
+    servos[SERVO_7].attach(SV7_DOUT);
+    servos[SERVO_8].attach(SV8_DOUT);
+
+    //set servos to initial desired position
+    servos[SERVO_1].write(SERVO_1_START_POS); 
+    servos[SERVO_2].write(SERVO_2_START_POS); 
+    servos[SERVO_3].write(SERVO_3_START_POS);      
+    servos[SERVO_4].write(SERVO_4_START_POS); 
+    servos[SERVO_5].write(SERVO_5_START_POS); 
+    servos[SERVO_6].write(SERVO_6_START_POS); 
+    servos[SERVO_7].write(SERVO_7_START_POS); 
+    servos[SERVO_8].write(SERVO_8_START_POS);  
+
+  #elif defined(VARIANT_B)
+    Serial.println(" Device B----");
+
+    //Set desired servo min-max limits
+    servos[SERVO_1].setLimits(SERVO_1_START_POS,SERVO_1_END_POS);
+    servos[SERVO_2].setLimits(SERVO_2_START_POS,SERVO_2_END_POS);
+    servos[SERVO_3].setLimits(SERVO_3_START_POS,SERVO_3_END_POS);
+    servos[SERVO_4].setLimits(SERVO_4_START_POS,SERVO_4_END_POS);
+
+    //Set up servo instances
+    servos[SERVO_1].attach(SV1_DOUT);
+    servos[SERVO_2].attach(SV2_DOUT);
+    servos[SERVO_3].attach(SV3_DOUT);
+    servos[SERVO_4].attach(SV4_DOUT);
+
+    //set servos to initial desired position
+    servos[SERVO_1].write(SERVO_1_START_POS); 
+    servos[SERVO_2].write(SERVO_2_START_POS); 
+    servos[SERVO_3].write(SERVO_3_START_POS);      
+    servos[SERVO_4].write(SERVO_4_START_POS); 
+
+  #elif defined(VARIANT_C)
+    Serial.println(" Device C----");
+
+    //Set desired servo min-max limits
+    servos[SERVO_8].setLimits(SERVO_8_START_POS,SERVO_8_END_POS);
+    //Set up servo instances
+    servos[SERVO_8].attach(SV8_DOUT);
+    //set servos to initial desired position
+    servos[SERVO_8].write(SERVO_8_START_POS); 
+
+  #elif defined(VARIANT_D)
+    Serial.println(" Device D----");
+
+    //Set desired servo min-max limits
+    servos[SERVO_8].setLimits(SERVO_8_START_POS,SERVO_8_END_POS);
+    //Set up servo instances
+    servos[SERVO_8].attach(SV8_DOUT);
+    //set servos to initial desired position
+    servos[SERVO_8].write(SERVO_8_START_POS); 
+  #endif
 
   //Attach callback to soft timers 
   servos_handler_timer.expiredHandler(servoRunSequence);
@@ -153,13 +199,44 @@ void LEDStartupIndicate()
 //Soft timer callback to handle updating servos
 void servoRunSequence(MillisTimer &timer_handle)
 { 
-  for (int i=SERVO_1;i<=SERVO_8;i++)
-  { 
-    if (!servos[i].readDir())
-      servos[i].write(servos[i].read()+SERVO_STEP_DEGREES);
-    else if (servos[i].readDir())
-      servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
-  }
+  #ifdef VARIANT_A
+    for (int i=SERVO_1;i<=SERVO_8;i++)
+    { 
+      if (!servos[i].readDir())
+        servos[i].write(servos[i].read()+SERVO_STEP_DEGREES);
+      else if (servos[i].readDir())
+        servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
+    }
+
+  #elif defined(VARIANT_B)
+    for (int i=SERVO_1;i<=SERVO_4;i++)
+    { 
+      if (!servos[i].readDir())
+        servos[i].write(servos[i].read()+SERVO_STEP_DEGREES);
+      else if (servos[i].readDir())
+        servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
+    }
+
+  #elif defined(VARIANT_C)
+    for (int i=SERVO_8;i<=SERVO_8;i++)
+    { 
+      if (!servos[i].readDir())
+        servos[i].write(servos[i].read()+SERVO_STEP_DEGREES);
+      else if (servos[i].readDir())
+        servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
+    }
+
+  #elif defined(VARIANT_D)
+    for (int i=SERVO_8;i<=SERVO_8;i++)
+    { 
+      if (!servos[i].readDir())
+        servos[i].write(servos[i].read()+SERVO_STEP_DEGREES);
+      else if (servos[i].readDir())
+        servos[i].write(servos[i].read()-SERVO_STEP_DEGREES);
+    }
+
+  #endif
+ 
 }
 
 // function to monitor battery and USB line voltages
