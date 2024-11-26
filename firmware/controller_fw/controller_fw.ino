@@ -8,6 +8,9 @@ ServoHT servos[NUM_SERVOS];
 MillisTimer servos_handler_timer(SERVO_UPDATE_PERIOD_MS);
 MillisTimer voltages_poll_timer(VOLTAGES_POLL_INT_MS);
 
+uint32_t vbat_thresh_counter; 
+bool low_battery = 0;
+
 float vbat,vbus;
 
 void setup()
@@ -127,10 +130,9 @@ void setup()
 
 void loop()
 { 
-  //Check if VBAT is below low battery threshold
-  if (vbat<VBAT_UVLO)
+  if (low_battery)
   {
-    //Halt loop - and flash low battery indicator
+    //Low battery condition - Halt loop and flash low battery indicator
     while (true)
     {
       digitalWrite(STAT2_LED,HIGH);
@@ -244,6 +246,23 @@ void readVoltages()
 {
   vbat = readCorrectedVoltage(VBAT_MON);
   vbus = readCorrectedVoltage(VBUS_MON);
+
+  if (vbat<VBAT_UVLO)
+  //Check if VBAT is below low battery threshold
+  {
+    //increment counter
+    vbat_thresh_counter += VOLTAGES_POLL_INT_MS;
+  }
+  else
+  {
+    //reset counter if voltage is above threshold
+    vbat_thresh_counter = 0;
+  }
+  //Voltage drop is sustained - set low battery condition
+  if (vbat_thresh_counter > VBAT_UVLO_TIME_THRESH_MS)
+  {
+    low_battery = 1;
+  }
 
   //Print VBAT and VBUS voltages
   Serial.print("VBAT(V) :");
