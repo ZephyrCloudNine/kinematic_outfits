@@ -18,12 +18,12 @@
 #define DIVIDER_RATIO 0.662
 
 //Number of analog samples to capture to derive average voltage reading
-#define SAMPLE_COUNT 10
+#define SAMPLE_COUNT 1
 
 //Battery low voltage threshold
-#define VBAT_UVLO 3.50
+#define VBAT_UVLO 3.35
 #define VOLTAGES_POLL_INT_MS 1000
-#define VBAT_UVLO_TIME_THRESH_MS VOLTAGES_POLL_INT_MS * 2
+#define VBAT_UVLO_TIME_THRESH_MS VOLTAGES_POLL_INT_MS * 5
 
 //VBUS min threshold
 #define VBUS_THRESH 4.80
@@ -37,7 +37,7 @@
 #define SERVO_STEP_DEGREES 1
 
 //Delay before starting operations - adjust as needed
-#define STARTUP_DELAY_MS 2000
+#define STARTUP_DELAY_MS 3000
 
 /*servo config, index, start and end positions - this is variant specific and can be customized*/
 #ifdef VARIANT_A
@@ -47,32 +47,32 @@
     #define SERVO_1_END_POS 90
 
     #define SERVO_2 1
-    #define SERVO_2_START_POS 5
-    #define SERVO_2_END_POS 90
+    #define SERVO_2_START_POS 90
+    #define SERVO_2_END_POS 5
 
     #define SERVO_3 2
     #define SERVO_3_START_POS 5
     #define SERVO_3_END_POS 90
 
     #define SERVO_4 3
-    #define SERVO_4_START_POS 5
-    #define SERVO_4_END_POS 90
+    #define SERVO_4_START_POS 90
+    #define SERVO_4_END_POS 5
 
     #define SERVO_5 4
     #define SERVO_5_START_POS 5
     #define SERVO_5_END_POS 90
 
     #define SERVO_6 5
-    #define SERVO_6_START_POS 5
-    #define SERVO_6_END_POS 90
+    #define SERVO_6_START_POS 90
+    #define SERVO_6_END_POS 5
 
     #define SERVO_7 6
     #define SERVO_7_START_POS 5
     #define SERVO_7_END_POS 90
 
     #define SERVO_8 7
-    #define SERVO_8_START_POS 5
-    #define SERVO_8_END_POS 90
+    #define SERVO_8_START_POS 90
+    #define SERVO_8_END_POS 5
 
 #endif
 
@@ -83,31 +83,31 @@
     #define SERVO_1_END_POS 90
 
     #define SERVO_2 1
-    #define SERVO_2_START_POS 5
-    #define SERVO_2_END_POS 90
+    #define SERVO_2_START_POS 90
+    #define SERVO_2_END_POS 5
 
     #define SERVO_3 2
     #define SERVO_3_START_POS 5
     #define SERVO_3_END_POS 90
 
     #define SERVO_4 3
-    #define SERVO_4_START_POS 5
-    #define SERVO_4_END_POS 90
+    #define SERVO_4_START_POS 90
+    #define SERVO_4_END_POS 5
 #endif
 
 #ifdef VARIANT_C
 
-    #define SERVO_1 0
-    #define SERVO_1_START_POS 5
-    #define SERVO_1_END_POS 90
+    #define SERVO_8 0
+    #define SERVO_8_START_POS 2
+    #define SERVO_8_END_POS 176
 
 #endif
 
 #ifdef VARIANT_D
 
-    #define SERVO_1 0
-    #define SERVO_1_START_POS 5
-    #define SERVO_1_END_POS 90
+    #define SERVO_8 0
+    #define SERVO_8_START_POS 2
+    #define SERVO_8_END_POS 176
 
 #endif
 #endif

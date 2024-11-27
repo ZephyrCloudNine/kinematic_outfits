@@ -126,6 +126,8 @@ void setup()
 
   //Sample voltages on startup
   readVoltages();
+
+  // while(1);
 }
 
 void loop()
@@ -169,12 +171,11 @@ float readCorrectedVoltage(uint32_t _pin)
 { 
   float temp_reading,avg_volts;
 
-  for (uint8_t i;i<SAMPLE_COUNT;i++)
-  {
-    temp_reading += analogRead(_pin);
-  }
+  temp_reading = analogRead(_pin);
+  // Serial.println(temp_reading);
 
-  avg_volts = (temp_reading/SAMPLE_COUNT)*(ADC_CONV_FACTOR/DIVIDER_RATIO);
+  //Calculate voltage reading and return
+  avg_volts = (temp_reading/(float)SAMPLE_COUNT)*(ADC_CONV_FACTOR/DIVIDER_RATIO);
   return avg_volts;
 }
 
